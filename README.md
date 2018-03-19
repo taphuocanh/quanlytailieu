@@ -1,6 +1,7 @@
 # quanlytailieu
 
-Use [url=https://github.com/n1crack/datatables]n1crack/datatables
+Use [n1crack/datatables](https://github.com/n1crack/datatables)
+
 
 MySQL database
 ```sql
