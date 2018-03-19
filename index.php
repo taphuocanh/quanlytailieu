@@ -12,7 +12,7 @@
                 console.log($(this).context.cellIndex);
                 
                 var title = $(this).text();
-                if ($(this).context.cellIndex <2 ) {
+                if ($(this).context.cellIndex > -1 ) {
                     $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
                 }
                 
@@ -21,10 +21,18 @@
                 "serverSide": true,
                 "ajax" : "ajax.php",
                 "columns": [
-                    { "data": "uid" },
-                    { "data": "uuid" },
-                    { "data": "action" },
-                    { "data": "method" }
+                    { "data": "id" },
+                    { "data": "subj_code" },
+                    { "data": "subj_name" },
+                    { "data": "typed" },
+                    { "data": "bookname" },
+                    { "data": "author" },
+                    { "data": "publishdate" },
+                    { "data": "publisher" },
+                    { "data": "document_note" },
+                    { "data": "status" },
+                    { "data": "storageat" },
+                    { "data": "note" }
                 ]
             } );
             // Apply the search
@@ -52,13 +60,21 @@
 <div id="container">
     <h1>Datatables - individual search example</h1>
     <p>Source codes: <a href="https://github.com/n1crack/datatables-examples/tree/master/sqlite_examples/individualsearch">https://github.com/n1crack/datatables-examples/tree/master/sqlite_examples/individualsearch</a></p>
-    <table border="0" cellpadding="4" cellspacing="0" class="display" id="example">
+    <table border="0" cellpadding="11" cellspacing="0" class="display" id="example">
         <thead>
         <tr>
-            <th width="32%">Name</th>
-            <th width="8%">ID</th>
-            <th width="32%">Name</th>
-            <th width="28%">Unit Price</th>
+            <th>ID</th>
+            <th>Mã môn học</th>
+            <th>Tên môn học</th>
+            <th>Giáo viên nhập</th>
+            <th>Tên sách</th>
+            <th>Tác giả</th>
+            <th>Năm xuất bản</th>
+            <th>Nơi xb/ Nhà xb</th>
+            <th>Ghi chú tài liệu</th>
+            <th>Trạng thái</th>
+            <th>Nơi lưu trữ</th>
+            <th>Tên sách đề nghị kiểm tra</th>
         </tr>
         </thead>
         <tbody>
@@ -68,10 +84,18 @@
         </tbody>
         <tfoot>
         <tr>
-            <th>Name</th>
             <th>ID</th>
-            <th>Name</th>
-            <th>Unit Price</th>
+            <th>Mã môn học</th>
+            <th>Tên môn học</th>
+            <th>Giáo viên nhập</th>
+            <th>Tên sách</th>
+            <th>Tác giả</th>
+            <th>Năm xuất bản</th>
+            <th>Nơi xb/ Nhà xb</th>
+            <th>Ghi chú tài liệu</th>
+            <th>Trạng thái</th>
+            <th>Nơi lưu trữ</th>
+            <th>Tên sách đề nghị kiểm tra</th>
         </tr>
         </tfoot>
 
