@@ -88,6 +88,22 @@
             return NULL;
         }
     });
+    $dt->add('tendonvi', function($data){
+        //return an edit link in new column action
+        global $conn;
+        $row = NULL;
+        if ($data['mabomon'] != NULL) {
+            $donviid = $conn->query("SELECT nv_tu_dien_don_vi_id FROM nv_tu_dien_bo_mon WHERE nv_tu_dien_bo_mon_ma = " . $data['mabomon'] . "");
+            $donvi = mysqli_fetch_assoc($donviid);
+            $result = $conn->query("SELECT nv_tu_dien_don_vi_ten_vn FROM nv_tu_dien_don_vi WHERE nv_tu_dien_don_vi_id = " . $donvi['nv_tu_dien_don_vi_id'] . "");
+            //var_dump($result);
+            $row = mysqli_fetch_assoc($result);
+            //var_dump($row);
+            return $row["nv_tu_dien_don_vi_ten_vn"];
+        } else {
+            return NULL;
+        }
+    });
 
 
 

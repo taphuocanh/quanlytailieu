@@ -9,14 +9,15 @@ MySQL database
 ```sql
 CREATE TABLE `document` (
     id int(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    subj_code int(11),
+    subj_code VARCHAR(255),
+    subj_name VARCHAR(255),
     typed TEXT,
     bookname TEXT,
     author VARCHAR(255),
     publishdate int(11),
     publisher VARCHAR(255),
     document_note TEXT,
-    status int(3),
+    status VARCHAR(255),
     storageat VARCHAR(255),
     note TEXT,
     path TEXT
