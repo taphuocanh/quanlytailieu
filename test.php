@@ -1,6 +1,6 @@
 <?php
 
-    $config = [ 'host'     => '10.6.1.57',
+    $config2 = [ 'host'     => '10.6.1.57',
                 'port'     => '3306',
                 'username' => 'root',
                 'password' => 'password',
@@ -9,7 +9,7 @@
             
 
     
-    $conn = new mysqli($config['host'], $config['username'], $config['password'], $config['database']);
+    $conn = new mysqli($config2['host'], $config2['username'], $config2['password'], $config2['database']);
     mysqli_set_charset($conn,"utf8");
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);

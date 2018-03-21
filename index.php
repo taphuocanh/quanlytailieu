@@ -8,15 +8,22 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css"/>
     <script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script type="text/javascript" language="javascript" src="//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf-8">
 
 
         function filterGlobal () {
-            $('#example').DataTable().search(
+            $('#mainTable').DataTable().search(
                 $('#global_filter').val(),
                 $('#global_regex').prop('checked'),
                 $('#global_smart').prop('checked')
@@ -24,7 +31,7 @@
         }
         
         function filterColumn ( i ) {
-            $('#example').DataTable().column( i ).search(
+            $('#mainTable').DataTable().column( i ).search(
                 $('#col'+i+'_filter').val(),
                 $('#col'+i+'_regex').prop('checked'),
                 $('#col'+i+'_smart').prop('checked')
@@ -33,8 +40,8 @@
 
         $(document).ready(function() {
             // Setup - add a text input to each footer cell
-            $('#example tfoot th').each( function () {
-                console.log($(this).context.cellIndex);
+            $('#mainTable tfoot th').each( function () {
+                //console.log($(this).context.cellIndex);
                 
                 var title = $(this).text();
                 if ($(this).context.cellIndex < -1 ) {
@@ -42,8 +49,37 @@
                 }
                 
             } );
-            var table = $('#example').DataTable( {
-                "serverSide" : true,
+            var table = $('#mainTable').DataTable( {
+                dom: 'lBfrtip',
+                buttons: [
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5'
+                ],
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                initComplete : function() {
+                    $('#searchButton-area').html(`<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#searchModal">Tìm kiếm</button>`);
+                    // this.api().columns().every( function () {
+                    //     var column = this;
+                    //     var select = $('<select><option value=""></option></select>')
+                    //         .appendTo( $(column.footer()).empty() )
+                    //         .on( 'change', function () {
+                    //             var val = $.fn.dataTable.util.escapeRegex(
+                    //                 $(this).val()
+                    //             );
+        
+                    //             column
+                    //                 .search( val ? '^'+val+'$' : '', true, false )
+                    //                 .draw();
+                    //         } );
+        
+                    //     column.data().unique().sort().each( function ( d, j ) {
+                    //         select.append( '<option value="'+d+'">'+d+'</option>' )
+                    //     } );
+                    // } );
+                },
+                //"serverSide" : true,
                 "ajax" : "ajax.php",
                 "responsive" : {
                     details: {
@@ -55,13 +91,14 @@
                     orderable: false,
                     targets:   0
                 } ],
-                order: [ 2, 'asc' ],
+                order: [ 1, 'des' ],
                 "columns" : [
                     { "data": "control" }, 
-                    { "data": "id" },
                     { "data": "bookname" },
                     { "data": "subj_name" },
                     { "data": "subj_code" },
+                    { "data": "mabomon" },
+                    { "data": "tenbomon" },
                     { "data": "author" },
                     { "data": "publishdate" },
                     { "data": "publisher" },
@@ -99,14 +136,31 @@
             padding: 3px;
             box-sizing: border-box;
         }
+        #searchButton-area {
+            position: fixed;
+            top: 5px;
+            right: 5px;
+            z-index: 100000000000;
+        }
     </style>
 </head>
 <body id="dt_example">
 <div id="container" class="container-fluid">
-    <h1>Datatables - individual search example</h1>
-    <p>Source codes: <a href="https://github.com/n1crack/datatables-examples/tree/master/sqlite_examples/individualsearch">https://github.com/n1crack/datatables-examples/tree/master/sqlite_examples/individualsearch</a></p>
+    <center><h1>Quản lý tài liệu</h1></centeR>
+    <!-- Trigger the modal with a button -->
+    <!-- Modal -->
+    <div id="searchButton-area"></div>
+    <div id="searchModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
-<table style="width: 50%; margin: 0 auto 2em auto;" class="table table-striped table-bordered">
+        <!-- Modal content-->
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Tìm kiếm</h4>
+        </div>
+        <div class="modal-body">
+        <table style="margin: 0 auto 2em auto;" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Tên trường tìm kiếm</th>
@@ -114,21 +168,25 @@
             </tr>
         </thead>
         <tbody>
-            <tr id="filter_global">
-                <td>Tìm kiếm chung</td>
-                <td align="center"><input type="text" class="global_filter" id="global_filter"></td>
+            <tr id="filter_col1" data-column="1">
+                <td>Tên sách</td>
+                <td align="center"><input type="text" class="column_filter" id="col1_filter"></td>
             </tr>
             <tr id="filter_col2" data-column="2">
-                <td>Tên sách</td>
+                <td>Tên môn học</td>
                 <td align="center"><input type="text" class="column_filter" id="col2_filter"></td>
             </tr>
             <tr id="filter_col3" data-column="3">
-                <td>Tên môn học</td>
+                <td>Mã môn học</td>
                 <td align="center"><input type="text" class="column_filter" id="col3_filter"></td>
             </tr>
             <tr id="filter_col4" data-column="4">
-                <td>Mã môn học</td>
+                <td>Mã bộ môn</td>
                 <td align="center"><input type="text" class="column_filter" id="col4_filter"></td>
+            </tr>
+            <tr id="filter_col5" data-column="5">
+                <td>Tên bộ môn</td>
+                <td align="center"><input type="text" class="column_filter" id="col5_filter"></td>
             </tr>
             <tr id="filter_col6" data-column="6">
                 <td>Tác giả</td>
@@ -138,17 +196,30 @@
                 <td>Năm xuất bản</td>
                 <td align="center"><input type="text" class="column_filter" id="col7_filter"></td>
             </tr>
+            <tr id="filter_col8" data-column="8">
+                <td>Nơi xb/ Nhà xb</td>
+                <td align="center"><input type="text" class="column_filter" id="col8_filter"></td>
+            </tr>
         </tbody>
     </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
 
-    <table id="example"  class="table table-striped table-bordered">
+    </div>
+    </div>
+    
+    <table id="mainTable" class="table table-striped table-bordered display" style="width:100%">
         <thead>
         <tr>
             <th>Hiển thị thêm</th>
-            <th>ID</th>
-            <th>Tên sách</th>
+            <th max-width="300px">Tên sách</th>
             <th>Tên môn học</th>
             <th>Mã môn học</th>
+            <th>Mã bộ môn</th>
+            <th>Tên bộ môn</th>
             <th>Tác giả</th>
             <th>Năm xuất bản</th>
             <th>Nơi xb/ Nhà xb</th>
@@ -166,10 +237,11 @@
         <tfoot>
         <tr>
             <th>Hiển thị thêm</th>
-            <th>ID</th>
             <th>Tên sách</th>
             <th>Tên môn học</th>
             <th>Mã môn học</th>
+            <th>Mã bộ môn</th>
+            <th>Tên bộ môn</th>
             <th>Tác giả</th>
             <th>Năm xuất bản</th>
             <th>Nơi xb/ Nhà xb</th>
