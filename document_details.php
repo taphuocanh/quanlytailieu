@@ -4,13 +4,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                 <h3 class="modal-title">Job Requirements & Description</h3>
+                 <h3 class="modal-title">Thông tin chi tiết về tài liệu</h3>
  
             </div>
             <div class="modal-body">
                  <table class="table table-striped table-bordered">
                     <tr>
-                        <td>Tên sách</td>
+                        <td width="30%">Tên sách</td>
                         <td><span id="txt-bookname"></span></td>
                     </tr>
                     <tr>
@@ -54,10 +54,20 @@
                         <td><span id="txt-storageat"></span></td>
                     </tr>
                  </table>
- 
+                <div class="upload-form">
+                    <span class="control-fileupload">
+                        <label for="file">Choose a file :</label>
+                        <input type="file" id="file">
+                        <p class="status"></p><hr>
+                        <button class="btn btn-primary btn-sm" id="up-file-btn">Tải lên</button>
+                    </span>
+                </div> 
             </div>
             <div class="modal-footer">
-                <a id="view-file-link" class="btn btn-default" href="">Xem file pdf</a>
+                <?php if ($logged) { ?>
+                <a id="up-file-link" class="btn btn-default" href="" target="_blank">Tải lên file pdf</a>
+                <?php } ?>
+                <a id="view-file-link" class="btn btn-default" href="" target="_blank">Xem file pdf</a>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
             </div>
         </div>

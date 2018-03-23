@@ -85,13 +85,14 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                 ],
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 initComplete : function() {
+                    
                     $('#mainTable_filter').hide();
                     // $('#searchButton-area').html(`<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#searchModal">Tìm kiếm</button>`);
                     this.api().columns().every( function () {
                         if(this[0][0] > -1) {
                             var column = this;
-                            var select = $('<br><select style="max-width:200px;"><option value=""></option></select>')
-                                .appendTo( $(column.footer()) )
+                            var select = $('<br><select id="filter-column-' + this[0][0] + '" style="max-width:200px;"><option value=""></option></select>')
+                                .appendTo( column.footer())
                                 .on( 'change', function () {
                                     $('input.column_filter').each((k, element) => {
                                         $(element).val('');
@@ -99,6 +100,10 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                                     var val = $.fn.dataTable.util.escapeRegex(
                                         $(this).val()
                                     );
+
+                                    if (column[0][0] == 1) {
+                                        $('#filter-select-box select').val( $(this).val() );
+                                    }
             
                                     column
                                         .search( val ? '^'+val+'$' : '', true, false )
@@ -106,8 +111,35 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                                 } );
             
                             column.data().unique().sort().each( function ( d, j ) {
-                                select.append( '<option value="'+d+'">'+d+'</option>' )
+                                if (d != null){
+                                 select.append( '<option value="'+d+'">'+d+'</option>' )
+                                }
                             } );
+
+                            if (this[0][0] == 1) {
+                                var column = this;
+                                var select = $('<select class="form-control" style="max-width:200px;"><option value=""></option></select>')
+                                    .appendTo( '#filter-select-box')
+                                    .on( 'change', function () {
+                                        $('input.column_filter').each((k, element) => {
+                                            $(element).val('');
+                                        });
+                                        $('select#filter-column-1').val($(this).val());
+                                        var val = $.fn.dataTable.util.escapeRegex(
+                                            $(this).val()
+                                        );
+                                        
+                                        column
+                                            .search( val ? '^'+val+'$' : '', true, false )
+                                            .draw();
+                                    } );
+                
+                                column.data().unique().sort().each( function ( d, j ) {
+                                    if (d != null){
+                                        select.append( '<option value="'+d+'">'+d+'</option>' )
+                                    }
+                                } );
+                            }
                         }
                     } );
                 },
@@ -135,6 +167,15 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                     { "data": "storageat" }
                 ]
             } );
+            table.on( 'draw', function () {
+                $('#mainTable tbody tr').each((k,e) => {
+                    tensach = $($(e).find('td')[0]).text();
+                    if (tensach.includes('Bài giảng') || tensach.includes('bài giảng') ) {
+                        console.log($('#mainTable tbody tr')[k]);
+                        $($('#mainTable tbody tr')[k]).css({"color": "rgb(0, 169, 21)", "text-decoration": "underline"});
+                    }
+                })
+            } );
             // Apply the search
             table.columns().every( function () {
                 var that = this;
@@ -161,13 +202,22 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 
 
             $('#mainTable tbody').on( 'click', 'tr', function () {
+                rowdata = table.row( this ).data();
                 
+                $('.upload-form').hide();
                 table.row( this ).data().foreach
                 let data = table.row( this ).data();
                 for(key in data){
                     $('#txt-' + key).text(data[key]);
                 }
-                $('a#view-file-link').attr('href', './view.php?file=' + data["id"] );
+                if (data['path'] != null) {
+                    $('a#view-file-link').show().attr('href', './uploads/' + data["id"] + '.pdf' );
+                    $('a#up-file-link').hide();
+                } else {
+                    $('a#view-file-link').hide();
+                    $('a#up-file-link').show();
+                }
+                
                 $('#DescModal').modal("show");
             } );
 
@@ -279,6 +329,12 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 
     </div>
     </div>
+    <?php if (!$logged) { ?> 
+    <div id="filter-select-box" class="form-group">
+        Lọc theo đơn vị: 
+    </div>
+    <br>
+    <?php } ?>
     <div class="">
     <table id="mainTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
@@ -345,6 +401,60 @@ $("#logout-link").on('click', function() {
     }
 
 });
+$(function() {
+  $('input[type=file]').change(function(){
+    var t = $(this).val();
+    var labelText = 'File : ' + t.substr(12, t.length);
+    $(this).prev('label').text(labelText);
+  })
+
+    $('a#up-file-link').on('click', function() {
+        $('.upload-form').show();
+        return false;
+    });
+
+    $('#up-file-btn').on('click', function() {
+        var file_data = $('#file').prop('files')[0];
+        //lấy ra kiểu file
+        var type = file_data.type;
+        //Xét kiểu file được upload
+        var match= ["application/pdf"];
+        //kiểm tra kiểu file
+        if(type == match[0])
+        {
+            //khởi tạo đối tượng form data
+            var form_data = new FormData();
+            //thêm files vào trong form data
+            file_data.id = rowdata.id;
+            form_data.append('id', rowdata.id);
+            form_data.append('file', file_data);
+            console.log(form_data);
+            
+            //sử dụng ajax post
+            $.ajax({
+                url: 'upload.php', // gửi đến file upload.php 
+                dataType: 'text',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,                       
+                type: 'post',
+                success: function(res){
+                    $('.status').html(res);
+                    $('#file').val('');
+                    var labelText = 'Choose a file ';
+                    $('input[type=file]').prev('label').text(labelText);
+                }
+            });           
+        } else{
+            $('.status').text('Chỉ được upload file pdf trong khi file của bạn là "' + file_data.type + '"');
+                $('#file').val('');
+        }
+        return false;
+    });
+
+});
+
 </script>
 
 </body>
