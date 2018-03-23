@@ -1,3 +1,28 @@
+<?php
+$logged = false;
+session_start();
+if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
+    require 'configs.php';
+
+    $conn = new mysqli($config2['host'], $config2['username'], $config2['password'], $config2['database']);
+    mysqli_set_charset($conn,"utf8");
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    } 
+    
+    $result = $conn->query("SELECT * FROM nv_tu_dien_nhan_vien WHERE nv_tu_dien_nhan_vien_user = '" . $_SESSION['login_user'] . "'");
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        $logged = true;
+    } else {
+        $logged = false;
+        unset($_SESSION);
+        session_destroy();
+        session_write_close();
+    }
+}
+?>
+
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -61,7 +86,7 @@
                 "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
                 initComplete : function() {
                     $('#mainTable_filter').hide();
-                    $('#searchButton-area').html(`<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#searchModal">Tìm kiếm</button>`);
+                    // $('#searchButton-area').html(`<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#searchModal">Tìm kiếm</button>`);
                     this.api().columns().every( function () {
                         if(this[0][0] > -1) {
                             var column = this;
@@ -136,12 +161,13 @@
 
 
             $('#mainTable tbody').on( 'click', 'tr', function () {
+                
                 table.row( this ).data().foreach
                 let data = table.row( this ).data();
                 for(key in data){
                     $('#txt-' + key).text(data[key]);
                 }
-                var name = $('td', this).eq(1).text();
+                $('a#view-file-link').attr('href', './view.php?file=' + data["id"] );
                 $('#DescModal').modal("show");
             } );
 
@@ -179,6 +205,11 @@
     </style>
 </head>
 <body id="dt_example">
+
+<?php
+    include 'header.php';
+?>
+
 <div id="container" class="container-fluid">
     <center><h1>Quản lý tài liệu</h1></centeR>
     <!-- Trigger the modal with a button -->
@@ -248,7 +279,7 @@
 
     </div>
     </div>
-    
+    <div class="">
     <table id="mainTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
         <tr>
@@ -289,74 +320,32 @@
         </tfoot>
 
     </table>
+    </div>
 </div>
 
-<div class="modal fade" id="DescModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                 <h3 class="modal-title">Job Requirements & Description</h3>
- 
-            </div>
-            <div class="modal-body">
-                 <table class="table table-striped table-bordered">
-                    <tr>
-                        <td>Tên sách</td>
-                        <td><span id="txt-bookname"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Tên môn học</td>
-                        <td><span id="txt-subj_name"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Mã môn học</td>
-                        <td><span id="txt-subj_code"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Mã bộ môn</td>
-                        <td><span id="txt-mabomon"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Tên bộ môn</td>
-                        <td><span id="txt-tenbomon"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Tác giả</td>
-                        <td><span id="txt-author"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Năm xuất bản</td>
-                        <td><span id="txt-publishdate"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Nơi xb/ Nhà xb</td>
-                        <td><span id="txt-publisher"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Ghi chú tài liệu</td>
-                        <td><span id="txt-document_note"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Trạng thái</td>
-                        <td><span id="txt-status"></span></td>
-                    </tr>
-                    <tr>
-                        <td>Nơi lưu trữ</td>
-                        <td><span id="txt-storageat"></span></td>
-                    </tr>
-                 </table>
- 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default " data-dismiss="modal">Apply!</button>
-                <button type="button" class="btn btn-primary">Close</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
+<?php
+    include 'document_details.php';
+    include 'loginModal.php';
+?>
+<script>
+$("#logout-link").on('click', function() {
+    var r = confirm("Bạn thực sự muốn đăng xuất?");
+    if (r == true) {
+        
+        $.ajax({
+            url : "logout.php",
+            type : "post",
+            dataType:"json",
+            success : function (result){
+                if (result.status && result.status == 'logout') {
+                    location.reload();
+                }
+            }
+        });
+    }
+
+});
+</script>
 
 </body>
 </html>
