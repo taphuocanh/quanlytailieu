@@ -4,16 +4,17 @@ session_start();
 if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
     require 'configs.php';
 
-    $conn = new mysqli($config2['host'], $config2['username'], $config2['password'], $config2['database']);
-    mysqli_set_charset($conn,"utf8");
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    $conn2 = new mysqli($config2['host'], $config2['username'], $config2['password'], $config2['database']);
+    mysqli_set_charset($conn2,"utf8");
+    if ($conn2->connect_error) {
+        die("Connection failed: " . $conn2->connect_error);
     } 
     
-    $result = $conn->query("SELECT * FROM nv_tu_dien_nhan_vien WHERE nv_tu_dien_nhan_vien_user = '" . $_SESSION['login_user'] . "'");
+    $result = $conn2->query("SELECT * FROM nv_tu_dien_nhan_vien WHERE nv_tu_dien_nhan_vien_user = '" . $_SESSION['login_user'] . "'");
 
     if ($row = mysqli_fetch_assoc($result)) {
         $logged = true;
+        $user = $row;
     } else {
         $logged = false;
         unset($_SESSION);
@@ -48,6 +49,9 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/scroller/1.4.4/js/dataTables.scroller.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/fixedheader/3.1.3/js/dataTables.fixedHeader.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment-with-locales.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/locale/vi.js"></script>
+    <script src="./assets/js/main.js"></script>
     <script type="text/javascript" charset="utf-8">
 
 
@@ -203,10 +207,12 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 
             $('#mainTable tbody').on( 'click', 'tr', function () {
                 rowdata = table.row( this ).data();
+                commentid = null;
+
                 
                 $('.upload-form').hide();
                 table.row( this ).data().foreach
-                let data = table.row( this ).data();
+                data = table.row( this ).data();
                 for(key in data){
                     $('#txt-' + key).text(data[key]);
                 }
@@ -217,7 +223,7 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                     $('a#view-file-link').hide();
                     $('a#up-file-link').show();
                 }
-                
+                get_commnets(rowdata['id']);
                 $('#DescModal').modal("show");
             } );
 
@@ -251,6 +257,28 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
         }
         #mainTable tfoot th, #mainTable thead th {
             white-space: nowrap;
+        }
+
+        #comment-box ul.media-list {
+            padding-left: 25px;
+        }
+        #comment-box>ul.media-list {
+            padding-left: 0;
+        }
+        #comment-box ul.media-list li {
+            margin-top: 0;
+        }
+        #comment-box .media-body {
+            border: 1px solid #ececec;
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: rgba(236, 236, 236, 0.6);
+        }
+        #comment-box .media-body p.media-content {
+            background: #fff;
+            padding: 10px;
         }
     </style>
 </head>

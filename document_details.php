@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                 <h3 class="modal-title">Thông tin chi tiết về tài liệu</h3>
+                <h3 class="modal-title">Thông tin chi tiết về tài liệu</h3>
  
             </div>
             <div class="modal-body">
@@ -69,6 +69,27 @@
                 <?php } ?>
                 <a id="view-file-link" class="btn btn-default" href="" target="_blank">Xem file pdf</a>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>
+                
+            </div>
+            <div class="modal-body">
+                <h4 class="modal-title">Bình luận
+                <div class="pull-right">
+                    <button id="open-comment-area" class="btn btn-sm">Bình luận</button>
+                </div>
+                </h4>
+                
+                <hr>
+                <div id="comment-area" style="display:none;">
+                    <form role="form" method="POST">
+                        <div class="form-group">
+                            <textarea name="comment-content" id="comment-content" class="form-control" rows="4" placeholder="Nội dung..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-default" id="post-comment" onclick="return false;">Đăng</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="comment-box">Loading</div>
             </div>
         </div>
         <!-- /.modal-content -->
