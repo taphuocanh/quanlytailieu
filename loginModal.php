@@ -3,10 +3,13 @@
         <div class="loginmodal-container">
             <h1>Đăng nhập</h1><br>
             <form id="loginForm" method="post">
+                <label for="">Tên đăng nhập</label>
                 <input type="text" id="txtusername" name="user" placeholder="Tên đang nhập">
+                <label for="">Mật khẩu</label>
                 <input type="password" id="txtpassword" name="pass" placeholder="Mật khẩu">
                 <input type="submit" name="login" class="login loginmodal-submit" value="Đăng nhập">
             </form>
+            <p>Chỉ các tài liệu của các môn thuộc cùng bộ môn sẽ được hiển thị.</p>
         </div>
     </div>
 </div>
@@ -24,11 +27,19 @@ $("#loginForm").on('submit', function() {
             username: txtusername,
             password: txtpassword
         },
+        beforeSend: function () {
+          $('#loginForm input[type="submit"]').val('Đang xử lý...');
+        },
         success : function (result){
             if (result.status && result.status == 'logged') {
                 location.reload();
+            } else {
+              alert('Tên đăng nhập hoặc mật khẩu không đúng!');
+              $('#loginForm input[type="submit"]').val('Đăng nhập');
             }
-            console.log(result.status);
+        },
+        done: function() {
+          $('#loginForm input[type="submit"]').val('Đăng nhập');
         }
     });
     
@@ -104,7 +115,7 @@ $("#loginForm").on('submit', function() {
   color: #fff;
   text-shadow: 0 1px rgba(0,0,0,0.1); 
   background-color: #4d90fe;
-  padding: 17px 0px;
+  padding: 10px 0px;
   font-family: arial;
   font-size: 14px;
   /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */

@@ -27,9 +27,9 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 
-    <title>DataTables example</title>
+    <title>Quản lý tài liệu</title>
     <!-- <link rel="stylesheet" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css"/> -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"/>
@@ -37,6 +37,7 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
     <link rel="stylesheet" href="//cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css"/>
     <link rel="stylesheet" href="//cdn.datatables.net/scroller/1.4.4/css/scroller.dataTables.min.css"/>
     <link rel="stylesheet" href="//cdn.datatables.net/fixedheader/3.1.3/css/fixedHeader.dataTables.min.css"/>
+    <link rel="stylesheet" href="./assets/css/style.css"/>
     <script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" language="javascript" src="//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
@@ -87,7 +88,13 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                 
             } );
             var table = $('#mainTable').DataTable( {
-                dom: 'lBfrtip',
+                "language": {
+                    "info": "<b>Tổng số:</b> _TOTAL_ tài liệu.",
+                    "infoFiltered": " - Đã lọc từ _MAX_ tài liệu.",
+                    "lengthMenu": "Hiển thị _MENU_ tài liệu.",
+                },
+                "dom": '<"top"iB>rt<"bottom"flp><"clear">',
+                //dom: 'lBfrtip',
                 buttons: [
                     'copyHtml5',
                     'excelHtml5',
@@ -126,10 +133,10 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                                 }
                             } );
 
-                            if (this[0][0] == 1) {
+                            if (this[0][0] == 2) {
                                 var column = this;
                                 var select = $('<select class="form-control" style="max-width:200px;"><option value=""></option></select>')
-                                    .appendTo( '#filter-select-box')
+                                    .appendTo( '#filter-select-box>div')
                                     .on( 'change', function () {
                                         $('input.column_filter').each((k, element) => {
                                             $(element).val('');
@@ -149,6 +156,7 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                                         select.append( '<option value="'+d+'">'+d+'</option>' )
                                     }
                                 } );
+                                $('#filter-select-box').show();
                             }
                         }
                     } );
@@ -164,14 +172,9 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                 
                 "columns" : [
                     { "data": "bookname" },
-                    { "data": "tendonvi" },
                     { "data": "subj_name" },
-                    { "data": "subj_code" },
-                    { "data": "mabomon" },
+                    { "data": "tendonvi" },
                     { "data": "tenbomon" },
-                    { "data": "author" },
-                    { "data": "publishdate" },
-                    { "data": "publisher" },
                     { "data": "document_note" },
                     { "data": "status" },
                     { "data": "storageat" }
@@ -295,7 +298,6 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 ?>
 
 <div id="container" class="container-fluid">
-    <center><h1>Quản lý tài liệu</h1></centeR>
     <!-- Trigger the modal with a button -->
     <!-- Modal -->
     <div id="searchButton-area"></div>
@@ -321,37 +323,17 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
                 <td>Tên sách</td>
                 <td align="center"><input type="text" class="column_filter" id="col0_filter"></td>
             </tr>
-            <tr id="filter_col1" data-column="1">
-                <td>Tên đơn vị</td>
-                <td align="center"><input type="text" class="column_filter" id="col1_filter"></td>
-            </tr>
-            <tr id="filter_col2" data-column="2">
+            <tr id="filter_col2" data-column="1">
                 <td>Tên môn học</td>
                 <td align="center"><input type="text" class="column_filter" id="col2_filter"></td>
             </tr>
-            <tr id="filter_col3" data-column="3">
-                <td>Mã môn học</td>
-                <td align="center"><input type="text" class="column_filter" id="col3_filter"></td>
+            <tr id="filter_col1" data-column="2">
+                <td>Tên đơn vị</td>
+                <td align="center"><input type="text" class="column_filter" id="col1_filter"></td>
             </tr>
-            <tr id="filter_col4" data-column="4">
-                <td>Mã bộ môn</td>
-                <td align="center"><input type="text" class="column_filter" id="col4_filter"></td>
-            </tr>
-            <tr id="filter_col5" data-column="5">
+            <tr id="filter_col5" data-column="3">
                 <td>Tên bộ môn</td>
                 <td align="center"><input type="text" class="column_filter" id="col5_filter"></td>
-            </tr>
-            <tr id="filter_col6" data-column="6">
-                <td>Tác giả</td>
-                <td align="center"><input type="text" class="column_filter" id="col6_filter"></td>
-            </tr>
-            <tr id="filter_col7" data-column="7">
-                <td>Năm xuất bản</td>
-                <td align="center"><input type="text" class="column_filter" id="col7_filter"></td>
-            </tr>
-            <tr id="filter_col8" data-column="8">
-                <td>Nơi xb/ Nhà xb</td>
-                <td align="center"><input type="text" class="column_filter" id="col8_filter"></td>
             </tr>
         </tbody>
     </table>
@@ -363,25 +345,14 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 
     </div>
     </div>
-    <?php if (!$logged) { ?> 
-    <div id="filter-select-box" class="form-group">
-        Lọc theo đơn vị: 
-    </div>
-    <br>
-    <?php } ?>
     <div class="">
     <table id="mainTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
         <tr>
             <th>Tên sách</th>
-            <th>Tên đơn vị</th>
             <th>Tên môn học</th>
-            <th>Mã môn học</th>
-            <th>Mã bộ môn</th>
+            <th>Tên đơn vị</th>
             <th>Tên bộ môn</th>
-            <th>Tác giả</th>
-            <th>Năm xuất bản</th>
-            <th>Nơi xb/ Nhà xb</th>
             <th>Ghi chú tài liệu</th>
             <th>Trạng thái</th>
             <th>Nơi lưu trữ</th>
@@ -395,14 +366,9 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
         <tfoot>
         <tr>
             <th>Tên sách</th>
-            <th>Tên đơn vị</th>
             <th>Tên môn học</th>
-            <th>Mã môn học</th>
-            <th>Mã bộ môn</th>
+            <th>Tên đơn vị</th>
             <th>Tên bộ môn</th>
-            <th>Tác giả</th>
-            <th>Năm xuất bản</th>
-            <th>Nơi xb/ Nhà xb</th>
             <th>Ghi chú tài liệu</th>
             <th>Trạng thái</th>
             <th>Nơi lưu trữ</th>
@@ -414,6 +380,7 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 </div>
 
 <?php
+    include 'footer.php';
     include 'document_details.php';
     include 'loginModal.php';
 ?>

@@ -58,6 +58,8 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
         if (isset($_POST['id']) && $_POST['id'] != NULL ) {
             $query = "DELETE FROM comments WHERE id = " . $_POST['id'];
             $conn->query($query);
+            $query = "UPDATE comments SET commentid = null WHERE commentid = " . $_POST['id'];
+            $conn->query($query);
             echo '{}';
         }
     }
