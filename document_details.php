@@ -22,10 +22,6 @@
                         <td><span id="txt-subj_code"></span></td>
                     </tr>
                     <tr>
-                        <td>Mã bộ môn</td>
-                        <td><span id="txt-mabomon"></span></td>
-                    </tr>
-                    <tr>
                         <td>Tên bộ môn</td>
                         <td><span id="txt-tenbomon"></span></td>
                     </tr>
@@ -62,6 +58,9 @@
                         <button class="btn btn-primary btn-sm" id="up-file-btn">Tải lên</button>
                     </span>
                 </div> 
+                <?php if (!$logged) { ?>
+                <p>Đăng nhập để tải lên tài liệu và bình luận.</p>
+                <?php } ?>
             </div>
             <div class="modal-footer">
                 <?php if ($logged) { ?>
@@ -74,7 +73,9 @@
             <div class="modal-body">
                 <h4 class="modal-title">Bình luận
                 <div class="pull-right">
+                    <?php if ($logged) { ?>
                     <button id="open-comment-area" class="btn btn-sm">Bình luận</button>
+                    <?php } ?>
                 </div>
                 </h4>
                 

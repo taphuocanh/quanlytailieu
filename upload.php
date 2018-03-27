@@ -3,6 +3,8 @@
 
 require 'src/fpdf/fpdf.php';
 require 'src/FPDI/fpdi.php';
+//require 'src/mpdf/Mpdf.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 require 'configs.php';
 
@@ -64,7 +66,31 @@ if(isset($_POST) && isset($_FILES['file'])) {
 
             if ($conn->query($sql) === TRUE) {
                 $fullPathToFile = 'uploads/' . $_POST['id'] . '.pdf';
+                $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4']);
+                
+                $mpdf->WriteHTML('<h1 style="text-align:center">Hello World</h1>');
+                $mpdf->AddPage();
+                $mpdf->SetImportUse();
 
+                $pagecount = $mpdf->SetSourceFile($fullPathToFile);
+                if($pagecount>1) {
+                    for($i=1;$i<=$pagecount;$i++) {
+                        //$pdf->endPage();
+                        $tplId = $mpdf->ImportPage($i);
+                        $mpdf->UseTemplate($tplId, 1, 1, 220, 305);
+                        if ($i<$pagecount) {
+                            $mpdf->AddPage();
+                        }
+                    }
+                }
+
+                
+
+                // Import the last page of the source PDF file
+                
+
+                // Saves file on the server as 'filename.pdf'
+                $mpdf->Output($fullPathToFile, \Mpdf\Output\Destination::FILE);
                 class PDF extends PDF_Rotate {
                     var $_tplIdx;
                     
@@ -79,7 +105,7 @@ if(isset($_POST) && isset($_FILES['file'])) {
                         
                         
                         if (is_null($this->_tplIdx)) {
-                            // THIS IS WHERE YOU GET THE NUMBER OF PAGES
+                            // THIS IS WHERE YOU GET THE NUMBER OF 
                             $this->numPages = $this->setSourceFile($fullPathToFile);
                             $this->_tplIdx = $this->importPage(1);
                         }

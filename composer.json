@@ -17,5 +17,9 @@
   "minimum-stability": "dev",
   "require-dev": {
     "phpspec/phpspec": "~2.0"
+  },
+  "require": {
+    "mpdf/mpdf": "dev-master",
+    "phpmailer/phpmailer": "dev-master"
   }
 }

@@ -51,6 +51,12 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment-with-locales.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/locale/vi.js"></script>
+    <?php if ($logged)  { ?>
+        <script type="text/javascript" charset="utf-8">
+            var logged = true;    
+            var userfullname = '<?php echo $user['nv_tu_dien_nhan_vien_ho_lot_vn'] . " " . $user['nv_tu_dien_nhan_vien_ten_vn'] ; ?>';
+        </script>
+    <?php } ?>
     <script src="./assets/js/main.js"></script>
     <script type="text/javascript" charset="utf-8">
 
@@ -211,7 +217,7 @@ if (array_key_exists("login_user",$_SESSION) && $_SESSION['login_user'] != '') {
 
                 
                 $('.upload-form').hide();
-                table.row( this ).data().foreach
+                // table.row( this ).data().foreach
                 data = table.row( this ).data();
                 for(key in data){
                     $('#txt-' + key).text(data[key]);
